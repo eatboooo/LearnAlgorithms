@@ -227,6 +227,35 @@
 
 ## KMP
 
+kmp 算法据说是需要掌握到被火车撞了躺在地上也可以立马写出来的程度
+
+查询 s2 在 s1 中出现的位置，也就是 s1.indexOf(s2)
+
+### 基础实现
+
+- 关键数组 nextArr
+  - 默认 0 位置填 -1，1位置填 0
+  - nextArr[i] 代表：必须以 i 位置的字符结尾的前提下的字符串，与从 0 位置开始的字符串，最长公共串的大小是多少
+  - ![例子](https://tva3.sinaimg.cn/mw690/6ca62763gy1gztalpjpsnj20wu03qdgc.jpg)
+  - nextArr 高效得到是关键（利用上一个位置得到的结论去加速）
+    - 假设此时来到 i 位置，同时有变量 compare = nextArr[i-1] + 1
+    - 当 i < char.length 时开循环
+    - 如果 char[i] == char[compare]，此时经过思考，证明 nextArr[i] = nextArr[i-1]+1，也就是 nextArr[i++] = ++compare,即可以复用前面的数据
+    - 如果 char[i] ！= char[compare] && compare > 0，compare = nextArr[compare] ，再去比较是否相同
+      - ⚠️为什么 compare = nextArr[compare] ，而不是从 0 开始？
+        - compare = nextArr[compare] 的本质其实是，
+        - 我们好不容易从 0 开始比较到了 compare 位置，发现有一个位置对不上了，我们能不能不从 0 + 1 的位置再开始比较，能否利用之前的信息，
+        - 而 nextArr [compare] 的值的含义就是 以 compare 结尾的，与 0 位置开头的相同字符串的长度是多少，
+        - 这样我们直接跳到相同字母的后面再开始比较，
+        - 相当于nextArr 数组记录了我们提前比较过的数据，进行一个加速
+    - 此时 comare == 0 成立，真就没有比得过的, nextArr[i++] = 0
+    - 结束循环
+- 生成了关键的 nextArr 之后，一切变得简单
+  - 两个指针分别对应 s1,s2
+  - 遍历比较
+  - 当出现不同字符时，s2index 不要归零，s2index = nextArr[s2index] （ nextArr == -1 情况除外）
+  - 一直找下去...
+
 ## Manacher
 
 ## BFPRT
@@ -266,3 +295,4 @@
 ## 外部信息简化
 
 ## 网络流
+
